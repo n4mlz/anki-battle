@@ -41,11 +41,16 @@ export async function fetchDeckList(
   };
 }
 
+function normalize(s: string): string {
+  return s.replace(/\s+/g, " ").trim();
+}
+
 export function findDeckByName(
   node: RawDeckNode,
   name: string
 ): RawDeckNode | null {
-  if (node.name === name) return node;
+  const normalizedName = normalize(name);
+  if (normalize(node.name ?? "") === normalizedName) return node;
 
   if (node.children) {
     for (const child of node.children) {
