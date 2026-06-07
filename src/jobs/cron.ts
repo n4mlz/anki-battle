@@ -8,6 +8,11 @@ export function startCronJob(): void {
   if (jobStarted) return;
 
   const config = loadConfig();
+  if (!config) {
+    console.log("[cron] No credentials.toml found — skipping cron job");
+    jobStarted = true;
+    return;
+  }
   const intervalMinutes = config.anki.fetch_interval_minutes || 5;
 
   console.log(`[cron] Starting fetch job every ${intervalMinutes} minutes`);

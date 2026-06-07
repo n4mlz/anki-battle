@@ -6,6 +6,23 @@ import { PlayerGrid } from "@/components/dashboard/player-grid";
 
 export default function Home() {
   const config = loadConfig();
+
+  if (!config) {
+    return (
+      <main className="min-h-screen p-4 md:p-8">
+        <div className="text-center py-20">
+          <h1 className="text-2xl font-bold tracking-tight mb-2">Anki Battle</h1>
+          <p className="text-muted-foreground">
+            credentials.toml が見つかりません。
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            credentials.example.toml をコピーして credentials.toml を作成してください。
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   const keys = getUserKeys();
   const snapshots = loadAllSnapshots(keys);
   const ranked = rankUsers(snapshots);

@@ -7,6 +7,8 @@ import type { UserSnapshot } from "@/types";
 
 export async function fetchAllUsers(): Promise<UserSnapshot[]> {
   const config = loadConfig();
+  if (!config) return [];
+
   const keys = getUserKeys();
   const results: UserSnapshot[] = [];
 
