@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { loadConfig, getUserKeys } from "@/lib/config";
+import { formatJstDateTime } from "@/lib/date-format";
 import { loadAllSnapshots } from "@/lib/snapshot";
 import { rankUsers } from "@/lib/scoring";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -32,9 +33,9 @@ export default async function Home() {
 
   const lastUpdated =
     snapshots.length > 0
-      ? new Date(
+      ? `${formatJstDateTime(
           Math.max(...snapshots.map((s) => new Date(s.timestamp).getTime()))
-        ).toLocaleString("ja-JP")
+        )} JST`
       : null;
 
   return (

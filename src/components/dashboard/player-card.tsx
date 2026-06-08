@@ -1,6 +1,7 @@
 "use client";
 
 import type { RankedUser } from "@/types";
+import { formatJstDateTime } from "@/lib/date-format";
 import { ProgressBar } from "./progress-bar";
 import { ChunkBars } from "./chunk-bars";
 
@@ -68,7 +69,10 @@ export function PlayerCard({ user }: PlayerCardProps) {
             {user.user}
           </span>
         </div>
-        <span className="text-[11px] md:text-xs text-gray-300">
+        <span
+          className="text-[11px] md:text-xs text-gray-300"
+          title={`最終更新: ${formatJstDateTime(user.timestamp)} JST`}
+        >
           {formatTimeAgo(user.timestamp)}
         </span>
       </div>

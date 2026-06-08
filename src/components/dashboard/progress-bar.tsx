@@ -30,7 +30,7 @@ export function ProgressBar({ maturePct, inProgressPct, newPct }: ProgressBarPro
       <div className="flex justify-between text-[10px] md:text-xs text-gray-400 mt-1 md:mt-1.5">
         <span className="inline-flex items-center gap-1">
           <span className="inline-block w-2 h-2 rounded-sm bg-[#22c55e]" />
-          卒業
+          習得済
         </span>
         <span className="inline-flex items-center gap-1">
           <span className="inline-block w-2 h-2 rounded-sm bg-[#3b82f6]" />
