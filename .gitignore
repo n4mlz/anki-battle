@@ -43,3 +43,13 @@ next-env.d.ts
 # Anki Battle
 data/snapshots/
 credentials.toml
+memo.txt
+
+# Playwright
+.playwright-mcp/
+
+# Brainstorming
+.superpowers/
+
+# Research artifacts
+deck_list_raw.json
