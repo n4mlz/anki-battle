@@ -45,9 +45,8 @@ export function PlayerCard({ user }: PlayerCardProps) {
   }
 
   const { deck } = user;
-  const total = deck.mature_total + deck.in_progress_total + deck.new_total;
-  const maturePct = total > 0 ? (deck.mature_total / total) * 100 : 0;
-  const inProgressPct = total > 0 ? (deck.in_progress_total / total) * 100 : 0;
+  const total = deck.studied_total + deck.new_total;
+  const studiedPct = total > 0 ? (deck.studied_total / total) * 100 : 0;
   const newPct = total > 0 ? (deck.new_total / total) * 100 : 0;
 
   return (
@@ -78,11 +77,7 @@ export function PlayerCard({ user }: PlayerCardProps) {
       </div>
 
       <div className="mb-5 md:mb-6">
-        <ProgressBar
-          maturePct={maturePct}
-          inProgressPct={inProgressPct}
-          newPct={newPct}
-        />
+        <ProgressBar studiedPct={studiedPct} newPct={newPct} />
       </div>
 
       <ChunkBars chunks={deck.chunks} />

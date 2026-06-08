@@ -13,6 +13,9 @@ export interface RawDeckNode {
   reviewCount?: number;
   learnCount?: number;
   newCount?: number;
+  // Uncapped (ignores daily new-card limit) = the true number of unseen cards.
+  // newCount above is the daily-due count shown in the deck list, NOT the total.
+  newUncapped?: number;
   totalInDeck?: number;
   totalIncludingChildren?: number;
   filtered?: boolean;
