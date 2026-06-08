@@ -1,10 +1,13 @@
+import { connection } from "next/server";
 import { loadConfig, getUserKeys } from "@/lib/config";
 import { loadAllSnapshots } from "@/lib/snapshot";
 import { rankUsers } from "@/lib/scoring";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { PlayerGrid } from "@/components/dashboard/player-grid";
 
-export default function Home() {
+export default async function Home() {
+  await connection();
+
   const config = loadConfig();
 
   if (!config) {
