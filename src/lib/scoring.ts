@@ -3,12 +3,12 @@ import { RawDeckNode, getInt } from "./anki/deck-list";
 
 function calcNodeStats(node: RawDeckNode) {
   const total = getInt(node.totalInDeck);
-  const newCount = getInt(node.newCount);
-  const learn = getInt(node.learnCount);
-  const review = getInt(node.reviewCount);
-  const mature = Math.max(0, total - newCount - learn - review);
-  const inProgress = learn + review;
-  return { total, newCount, inProgress, mature };
+  // new_uncapped is the true count of unseen cards. node.newCount is only the
+  // daily-due number shown in the deck list (capped by the new-cards/day limit),
+  // so it must NOT be used to infer how much has been studied.
+  const newCount = Math.min(getInt(node.newUncapped), total);
+  const studied = Math.max(0, total - newCount);
+  return { total, newCount, studied };
 }
 
 export function buildChunks(children: RawDeckNode[]): ChunkProgress[] {
@@ -17,7 +17,7 @@ export function buildChunks(children: RawDeckNode[]): ChunkProgress[] {
   );
 
   return sorted.map((child, i) => {
-    const { total, newCount, inProgress, mature } = calcNodeStats(child);
+    const { total, newCount, studied } = calcNodeStats(child);
 
     const rangeMatch = (child.name ?? "").match(/\((\d+)-(\d+)\)/);
     const label = rangeMatch ? `${rangeMatch[1]}-${rangeMatch[2]}` : `chunk${i + 1}`;
@@ -28,7 +28,7 @@ export function buildChunks(children: RawDeckNode[]): ChunkProgress[] {
     else if (child.name?.includes("860")) level = "860";
     else if (child.name?.includes("990")) level = "990";
 
-    return { index: i + 1, label, level, total, mature, inProgress, newCount };
+    return { index: i + 1, label, level, total, studied, newCount };
   });
 }
 
@@ -37,19 +37,16 @@ export function buildDeckSnapshot(deck: RawDeckNode): DeckSnapshot {
   const chunks = buildChunks(children);
 
   const totalIncluding = getInt(deck.totalIncludingChildren);
-  const mature = chunks.reduce((s, c) => s + c.mature, 0);
-  const inProgress = chunks.reduce((s, c) => s + c.inProgress, 0);
+  const studied = chunks.reduce((s, c) => s + c.studied, 0);
   const newCount = chunks.reduce((s, c) => s + c.newCount, 0);
 
-  const totalStudied = mature + inProgress;
-  const totalProgress = totalIncluding > 0 ? Math.round((totalStudied / totalIncluding) * 1000) / 10 : 0;
+  const totalProgress = totalIncluding > 0 ? Math.round((studied / totalIncluding) * 1000) / 10 : 0;
 
   return {
     deck_id: String(deck.deckId ?? ""),
     name: deck.name ?? "",
     total_including_children: totalIncluding,
-    mature_total: mature,
-    in_progress_total: inProgress,
+    studied_total: studied,
     new_total: newCount,
     total_progress_pct: totalProgress,
     chunks,
@@ -66,7 +63,7 @@ export function rankUsers(snapshots: UserSnapshot[]): RankedUser[] {
     const aPct = a.deck?.total_progress_pct ?? 0;
     const bPct = b.deck?.total_progress_pct ?? 0;
     if (bPct !== aPct) return bPct - aPct;
-    return (a.deck?.mature_total ?? 0) > (b.deck?.mature_total ?? 0) ? -1 : 1;
+    return (a.deck?.studied_total ?? 0) > (b.deck?.studied_total ?? 0) ? -1 : 1;
   });
 
   ranked.forEach((u, i) => {

@@ -37,11 +37,7 @@ function ChunkBar({ chunk, total }: { chunk: ChunkProgress; total: number }) {
       <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden flex">
         <div
           className="bg-[#22c55e]"
-          style={{ width: `${pct(chunk.mature)}%` }}
-        />
-        <div
-          className="bg-[#3b82f6]"
-          style={{ width: `${pct(chunk.inProgress)}%` }}
+          style={{ width: `${pct(chunk.studied)}%` }}
         />
         <div className="flex-1" />
       </div>

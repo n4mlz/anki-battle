@@ -17,17 +17,15 @@ export interface ChunkProgress {
   label: string;
   level: string;
   total: number;
-  mature: number;
-  inProgress: number;
-  newCount: number;
+  studied: number; // total - newCount (cards seen at least once)
+  newCount: number; // new_uncapped: true number of unseen cards
 }
 
 export interface DeckSnapshot {
   deck_id: string;
   name: string;
   total_including_children: number;
-  mature_total: number;
-  in_progress_total: number;
+  studied_total: number;
   new_total: number;
   total_progress_pct: number;
   chunks: ChunkProgress[];
