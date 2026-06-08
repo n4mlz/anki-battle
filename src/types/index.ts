@@ -18,7 +18,8 @@ export interface ChunkProgress {
   level: string;
   total: number;
   mature: number;
-  done: boolean;
+  inProgress: number;
+  newCount: number;
 }
 
 export interface DeckSnapshot {
@@ -26,8 +27,9 @@ export interface DeckSnapshot {
   name: string;
   total_including_children: number;
   mature_total: number;
-  base_progress_pct: number;
-  bonus_progress_pct: number;
+  in_progress_total: number;
+  new_total: number;
+  total_progress_pct: number;
   chunks: ChunkProgress[];
 }
 

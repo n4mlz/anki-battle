@@ -1,25 +1,14 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
-import { RankBadge } from "./rank-badge";
-import { DonutChart } from "./donut-chart";
-import { ChunkChips } from "./chunk-chips";
-import { LevelLegend } from "./level-legend";
 import type { RankedUser } from "@/types";
-
-const rankStyles: Record<number, { border: string; bg: string }> = {
-  1: { border: "border-[#FFD700]", bg: "bg-[#fffbeb]" },
-  2: { border: "border-[#C0C0C0]", bg: "bg-[#f8fafc]" },
-  3: { border: "border-[#CD7F32]", bg: "bg-[#fff7ed]" },
-  4: { border: "border-gray-200", bg: "bg-[#f9fafb]" },
-};
+import { ProgressBar } from "./progress-bar";
+import { ChunkBars } from "./chunk-bars";
 
 const rankColors: Record<number, string> = {
-  1: "#22c55e",
-  2: "#3b82f6",
-  3: "#f97316",
-  4: "#6b7280",
+  1: "#fbbf24",
+  2: "#c0c0c0",
+  3: "#cd7f32",
+  4: "#d1d5db",
 };
 
 function formatTimeAgo(iso: string): string {
@@ -37,48 +26,62 @@ interface PlayerCardProps {
 }
 
 export function PlayerCard({ user }: PlayerCardProps) {
-  const style = rankStyles[user.rank] ?? rankStyles[4];
-  const color = rankColors[user.rank] ?? "#6b7280";
+  const accentColor = rankColors[user.rank] ?? "#d1d5db";
 
   if (user.error || !user.deck) {
     return (
-      <Card className={cn("relative border-2", style.border, style.bg)}>
-        <CardContent className="p-4">
-          <RankBadge rank={user.rank} />
-          <div className="mt-2 text-center">
-            <h3 className="text-lg font-bold">{user.user}</h3>
-            <p className="text-sm text-destructive mt-2">{user.error ?? "データなし"}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="relative bg-white border border-gray-200 rounded-xl overflow-hidden p-5">
+        <div
+          className="absolute top-0 left-0 w-1 h-10 rounded-tl-xl"
+          style={{ background: accentColor }}
+        />
+        <div className="text-center">
+          <h3 className="text-base font-semibold text-gray-900">{user.user}</h3>
+          <p className="text-sm text-red-500 mt-2">{user.error ?? "データなし"}</p>
+        </div>
+      </div>
     );
   }
 
   const { deck } = user;
+  const total = deck.mature_total + deck.in_progress_total + deck.new_total;
+  const maturePct = total > 0 ? (deck.mature_total / total) * 100 : 0;
+  const inProgressPct = total > 0 ? (deck.in_progress_total / total) * 100 : 0;
+  const newPct = total > 0 ? (deck.new_total / total) * 100 : 0;
 
   return (
-    <Card className={cn("relative border-2", style.border, style.bg)}>
-      <CardContent className="p-4">
-        <RankBadge rank={user.rank} />
+    <div className="relative bg-white border border-gray-200 rounded-xl overflow-hidden p-5">
+      <div
+        className="absolute top-0 left-0 w-1 h-10"
+        style={{ background: accentColor }}
+      />
 
-        <div className="flex justify-between items-start mt-1 mb-2">
-          <h3 className="text-xl font-bold">{user.user}</h3>
-          <span className="text-xs text-muted-foreground">
-            最終同期: {formatTimeAgo(user.timestamp)}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <span
+            className="text-sm font-bold tabular-nums"
+            style={{ color: accentColor }}
+          >
+            {user.rank}
+          </span>
+          <span className="text-base font-semibold text-gray-900">
+            {user.user}
           </span>
         </div>
+        <span className="text-[11px] text-gray-300">
+          {formatTimeAgo(user.timestamp)}
+        </span>
+      </div>
 
-        <DonutChart
-          basePct={deck.base_progress_pct}
-          bonusPct={deck.bonus_progress_pct}
-          color={color}
+      <div className="mb-5">
+        <ProgressBar
+          maturePct={maturePct}
+          inProgressPct={inProgressPct}
+          newPct={newPct}
         />
+      </div>
 
-        <div className="mt-3">
-          <ChunkChips chunks={deck.chunks} />
-          <LevelLegend />
-        </div>
-      </CardContent>
-    </Card>
+      <ChunkBars chunks={deck.chunks} />
+    </div>
   );
 }
