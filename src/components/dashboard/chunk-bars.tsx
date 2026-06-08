@@ -28,12 +28,11 @@ export function ChunkBars({ chunks }: ChunkBarsProps) {
 
 function ChunkBar({ chunk, total }: { chunk: ChunkProgress; total: number }) {
   const pct = (n: number) => total > 0 ? (n / chunk.total) * 100 : 0;
-  const isBonus = chunk.level === "990";
 
   return (
     <div className="flex-1 text-center">
       <div className="text-[9px] text-gray-400 mb-0.5">
-        {isBonus ? "+" : chunk.index}
+        {chunk.index}
       </div>
       <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden flex">
         <div
