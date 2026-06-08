@@ -6,7 +6,13 @@ function calcNodeStats(node: RawDeckNode) {
   // new_uncapped is the true count of unseen cards. node.newCount is only the
   // daily-due number shown in the deck list (capped by the new-cards/day limit),
   // so it must NOT be used to infer how much has been studied.
-  const newCount = Math.min(getInt(node.newUncapped), total);
+  const uncapped = getInt(node.newUncapped);
+  const capped = getInt(node.newCount);
+  // When newUncapped is 0 but newCount (capped) > 0, the API may not have
+  // returned newUncapped. Fall back to newCount to avoid false 100% progress.
+  const newCount = uncapped > 0
+    ? Math.min(uncapped, total)
+    : Math.max(capped, 0);
   const studied = Math.max(0, total - newCount);
   return { total, newCount, studied };
 }

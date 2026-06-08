@@ -118,12 +118,13 @@ data/snapshots/<user>_latest.json
 
 各デッキの子デッキをチャンクとして扱い、次の値を集計します。
 
-- `mature`: デッキ内総数から `new`、`learn`、`review` を引いた数
-- `inProgress`: `learn + review`
-- `newCount`: 未学習カード数
-- `total_progress_pct`: `(mature + inProgress) / totalIncludingChildren`
+- `newCount`: `new_uncapped`（日次上限のキャップを無視した真の未学習カード数）
+- `studied`: `total − newCount`（1回以上学習したカード数）
+- `total_progress_pct`: `studied / totalIncludingChildren`
 
-ランキングは `total_progress_pct` の降順です。同率の場合は `mature_total` が多いユーザーが上位になります。
+AnkiWeb のデッキ一覧 API では `new_count`（今日やる分＝日次上限でキャップされた値）と `new_uncapped`（全未学習カード）が分かれています。後者を使って進捗を計算します。
+
+ランキングは `total_progress_pct` の降順です。同率の場合は `studied_total` が多いユーザーが上位になります。
 
 ## コマンド
 
