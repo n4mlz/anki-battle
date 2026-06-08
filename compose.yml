@@ -1,0 +1,18 @@
+services:
+  anki-battle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: anki-battle:release
+    container_name: anki-battle
+    restart: unless-stopped
+    ports:
+      - "${ANKI_BATTLE_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - ./credentials.toml:/app/credentials.toml:ro
+      - ./data/snapshots:/app/data/snapshots

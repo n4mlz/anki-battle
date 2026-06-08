@@ -78,6 +78,32 @@ http://localhost:3000
 PORT=3001 npm run dev
 ```
 
+## Docker Compose で起動
+
+設定ファイルを作成します。
+
+```bash
+cp .env.example .env
+```
+
+release build のコンテナを作成して起動します。
+
+```bash
+docker compose up --build -d
+```
+
+`compose.yml` はホスト側の `credentials.toml` をコンテナ内の `/app/credentials.toml` に read-only でマウントします。認証情報や対象デッキを変更する場合は、ホスト側の `credentials.toml` を編集してからコンテナを再起動してください。
+
+```bash
+docker compose restart anki-battle
+```
+
+snapshot はホスト側の `data/snapshots/` に保存されます。公開ポートを変える場合は `.env` の `ANKI_BATTLE_PORT` を変更します。
+
+```env
+ANKI_BATTLE_PORT=3001
+```
+
 ## データの保存先
 
 取得した最新データはユーザーごとに保存されます。
